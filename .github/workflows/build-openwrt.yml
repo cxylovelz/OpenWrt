@@ -53,22 +53,27 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+        
     - name: Clone source code
       working-directory: /workdir
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
+        
     - name: Update feeds
+      run: cd openwrt && ./scripts/feeds update -a
+     
+    - name: Delete Files
       run: |
        cd openwrt
-       ./scripts/feeds update -a
        rm -rf feeds/lienol/lienol/ipt2socks
        rm -rf feeds/lienol/lienol/shadowsocksr-libev
        rm -rf feeds/lienol/lienol/pdnsd-alt
@@ -83,6 +88,12 @@ jobs:
        rm -rf package/lean/luci-app-pptp-server
        rm -rf package/lean/luci-app-v2ray-server
 
+    - name: Install theme argon
+      run: |
+       cd openwrt/package/lean
+       rm -rf luci-theme-argon  
+       git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git
+       
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
