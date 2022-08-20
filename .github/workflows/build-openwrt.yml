@@ -6,7 +6,7 @@
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 # Description: Build OpenWrt using GitHub Actions
-#
+# 
 
 name: Build OpenWrt
 
@@ -86,6 +86,7 @@ jobs:
        rm -rf package/lean/luci-app-pppoe-relay
        rm -rf package/lean/luci-app-pptp-server
        rm -rf package/lean/luci-app-v2ray-server
+       #https://blog.csdn.net/menglongfc/article/details/107636506
        
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
